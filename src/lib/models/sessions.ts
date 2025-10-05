@@ -14,7 +14,6 @@ const sessionSchema = new Schema<ISession>(
     sessionId: {
       type: String,
       required: [true, 'El sessionId es requerido'],
-      unique: true,
       length: 64
     },
     userId: {
@@ -24,8 +23,7 @@ const sessionSchema = new Schema<ISession>(
     },
     expiresAt: {
       type: Date,
-      required: [true, 'La fecha de expiración es requerida'],
-      index: { expires: 0 } // TTL index para auto-eliminar sesiones expiradas
+      required: [true, 'La fecha de expiración es requerida']
     }
   },
   {
@@ -35,9 +33,9 @@ const sessionSchema = new Schema<ISession>(
 )
 
 // Índices
-sessionSchema.index({ sessionId: 1 })
+sessionSchema.index({ sessionId: 1 }, { unique: true })
 sessionSchema.index({ userId: 1 })
-sessionSchema.index({ expiresAt: 1 })
+sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }) // TTL index para auto-eliminar sesiones expiradas
 
 // Modelo
 export const Session: Model<ISession> = mongoose.models.Session || mongoose.model<ISession>('Session', sessionSchema)

@@ -1,4 +1,5 @@
-@host = laughing-telegram-qjpxpgqwxx6f65rg-3000.app.github.dev
+# @host = laughing-telegram-qjpxpgqwxx6f65rg-3000.app.github.dev
+@host = localhost:3000
 @session = session=2facd737824917b06813da49cfe00a9e4af334bbf920e9bc6072956d49804a91; Path=/; Expires=Sun, 12 Oct 2025 01:39:44 GMT; HttpOnly; SameSite=lax
 @email = silvino@gmail.com
 @password = xemwus-pemguk-Zesdi9
