@@ -1,9 +1,10 @@
 import 'server-only'
 import { cookies } from 'next/headers'
 import { connectDB } from './db'
-import { Session } from './models'
 import crypto from 'crypto'
-import mongoose from 'mongoose'
+import mongoose, { type ObjectId } from 'mongoose'
+import { Session } from './models/sessions'
+import { config } from '@/utils/config'
 
 // Duración de la sesión: 7 días
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000
@@ -20,10 +21,10 @@ function generateSessionId(): string {
 }
 
 // Crear una nueva sesión en la base de datos
-export async function createSession(userId: string | mongoose.Types.ObjectId): Promise<string> {
+export async function createSession(userId: string | ObjectId): Promise<string> {
   try {
     await connectDB()
-    
+
     const sessionId = generateSessionId()
     const expiresAt = new Date(Date.now() + SESSION_DURATION)
 
@@ -38,7 +39,7 @@ export async function createSession(userId: string | mongoose.Types.ObjectId): P
     const cookieStore = await cookies()
     cookieStore.set('session', sessionId, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.env === 'production',
       expires: expiresAt,
       sameSite: 'lax',
       path: '/'
@@ -55,7 +56,7 @@ export async function createSession(userId: string | mongoose.Types.ObjectId): P
 export async function getSession(): Promise<SessionData | null> {
   try {
     await connectDB()
-    
+
     const cookieStore = await cookies()
     const sessionId = cookieStore.get('session')?.value
 
@@ -90,7 +91,7 @@ export async function getSession(): Promise<SessionData | null> {
 export async function updateSession(): Promise<void> {
   try {
     const session = await getSession()
-    
+
     if (!session) {
       return
     }
@@ -107,7 +108,7 @@ export async function updateSession(): Promise<void> {
     const cookieStore = await cookies()
     cookieStore.set('session', session.id, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: config.env === 'production',
       expires: newExpiresAt,
       sameSite: 'lax',
       path: '/'
@@ -121,7 +122,7 @@ export async function updateSession(): Promise<void> {
 export async function deleteSession(): Promise<void> {
   try {
     await connectDB()
-    
+
     const cookieStore = await cookies()
     const sessionId = cookieStore.get('session')?.value
 

@@ -2,11 +2,11 @@
 import { NextResponse } from 'next/server'
 import argon2 from 'argon2'
 import { connectDB } from '@/lib/db'
-import { User } from '@/lib/models'
 import { createSession } from '@/lib/session'
 import { applyRateLimit } from '@/lib/rate-limit-middleware'
 import { RATE_LIMITS } from '@/lib/rate-limit'
 import { z } from 'zod'
+import { User } from '@/lib/models/user'
 
 // Schema de validación
 const signupSchema = z.object({
@@ -17,21 +17,21 @@ const signupSchema = z.object({
 
 export async function POST(request: Request) {
   // Aplicar rate limiting por IP
-  // const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.SIGNUP)
-  // if (rateLimitByIp) {
-  //   return rateLimitByIp
-  // }
+  const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.SIGNUP)
+  if (rateLimitByIp) {
+    return rateLimitByIp
+  }
 
   try {
     await connectDB()
-    
+
     const body = await request.json()
 
     // Validar datos de entrada
     const validation = signupSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
+        {
           message: 'Datos inválidos',
           errors: validation.error.issues
         },
@@ -67,10 +67,10 @@ export async function POST(request: Request) {
     })
 
     // Crear sesión automáticamente después del registro
-    await createSession(newUser._id)
+    await createSession(newUser._id.toString())
 
     return NextResponse.json(
-      { 
+      {
         message: 'Usuario registrado exitosamente',
         user: {
           id: newUser._id.toString(),

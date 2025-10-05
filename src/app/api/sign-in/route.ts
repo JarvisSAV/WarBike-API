@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import argon2 from 'argon2'
 import { connectDB } from '@/lib/db'
-import { User } from '@/lib/models'
 import { createSession } from '@/lib/session'
 import { applyRateLimit } from '@/lib/rate-limit-middleware'
 import { RATE_LIMITS } from '@/lib/rate-limit'
 import { z } from 'zod'
+import { User } from '@/lib/models/user'
 
 // Schema de validación
 const signinSchema = z.object({
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const validation = signinSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { 
+        {
           message: 'Datos inválidos',
           errors: validation.error.issues
         },
@@ -70,10 +70,10 @@ export async function POST(request: Request) {
     }
 
     // Crear sesión con el ObjectId del usuario
-    await createSession(user._id)
+    await createSession(user._id.toString())
 
     return NextResponse.json(
-      { 
+      {
         message: 'Inicio de sesión exitoso',
         user: {
           _id: user._id,

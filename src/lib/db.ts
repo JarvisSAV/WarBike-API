@@ -1,16 +1,9 @@
 // Conexión a MongoDB usando Mongoose
+import { config } from '@/utils/config'
 import mongoose from 'mongoose'
 
-// Construir URI de conexión
-const DB_USER = process.env.DB_USER || 'warbike'
-const DB_PASSWORD = process.env.DB_PASSWORD || ''
-const DB_HOST = process.env.DB_HOST || 'localhost'
-const DB_PORT = process.env.DB_PORT || '27017'
-const DB_NAME = process.env.DB_NAME || 'warbike'
-
 // URI de conexión MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 
-  `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`
+const MONGODB_URI = config.mongodbUri
 
 // Variable para trackear el estado de conexión
 let isConnected = false
@@ -32,7 +25,7 @@ export async function connectDB(): Promise<typeof mongoose> {
     })
 
     isConnected = true
-    console.log('✅ Conectado a MongoDB:', DB_NAME)
+    console.log('✅ Conectado a MongoDB:', config.db.name)
     
     return db
   } catch (error) {

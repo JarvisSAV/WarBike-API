@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { connectDB } from '@/lib/db'
-import { User } from '@/lib/models'
+import { User } from '@/lib/models/user'
 
 export async function GET() {
   try {
@@ -29,7 +29,7 @@ export async function GET() {
     }
 
     return NextResponse.json(
-      { 
+      {
         user: {
           _id: user._id,
           email: user.email,
