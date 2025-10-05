@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import argon2 from 'argon2'
-import { db } from '@/lib/db'
+import { connectDB } from '@/lib/db'
+import { User } from '@/lib/models'
 import { createSession } from '@/lib/session'
 import { applyRateLimit } from '@/lib/rate-limit-middleware'
 import { RATE_LIMITS } from '@/lib/rate-limit'
@@ -11,13 +12,6 @@ const signinSchema = z.object({
   email: z.email('Email inválido'),
   password: z.string().min(1, 'La contraseña es requerida')
 })
-
-interface UserRow {
-  id: number
-  email: string
-  password: string
-  name: string
-}
 
 export async function POST(request: Request) {
   // Aplicar rate limiting por IP
@@ -52,20 +46,18 @@ export async function POST(request: Request) {
       return rateLimitByEmail
     }
 
-    // Buscar usuario por email
-    const [users] = await db.query(
-      'SELECT id, email, password, name FROM users WHERE email = ?',
-      [email]
-    ) as [UserRow[], unknown]
+    // Conectar a MongoDB
+    await connectDB()
 
-    if (users.length === 0) {
+    // Buscar usuario por email (case-insensitive)
+    const user = await User.findOne({ email: email.toLowerCase() })
+
+    if (!user) {
       return NextResponse.json(
         { message: 'Credenciales inválidas' },
         { status: 401 }
       )
     }
-
-    const user = users[0]
 
     // Verificar la contraseña con Argon2
     const isValidPassword = await argon2.verify(user.password, password)
@@ -77,14 +69,14 @@ export async function POST(request: Request) {
       )
     }
 
-    // Crear sesión
-    await createSession(user.id)
+    // Crear sesión con el ObjectId del usuario
+    await createSession(user._id)
 
     return NextResponse.json(
       { 
         message: 'Inicio de sesión exitoso',
         user: {
-          id: user.id,
+          _id: user._id,
           email: user.email,
           name: user.name
         }

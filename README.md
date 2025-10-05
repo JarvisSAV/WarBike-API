@@ -1,6 +1,6 @@
 # 🚴 WarBike API
 
-API REST completa construida con Next.js 15, MySQL, Argon2 y Rate Limiting.
+API REST completa construida con Next.js 15, MongoDB, Mongoose, Argon2 y Rate Limiting.
 
 ## 🚀 Inicio Rápido
 
@@ -34,7 +34,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ### 🔐 Autenticación Completa
 - ✅ Registro de usuarios con Argon2id
 - ✅ Inicio de sesión seguro
-- ✅ Sesiones almacenadas en MySQL
+- ✅ Sesiones almacenadas en MongoDB
 - ✅ Cookies HttpOnly y Secure
 - ✅ Validación con Zod
 
@@ -48,11 +48,12 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 [📖 Ver documentación de rate limiting](./docs/README-RATE-LIMIT.md)
 
-### 🗄️ Base de Datos MySQL
+### 🗄️ Base de Datos MongoDB
 - ✅ Docker Compose configurado
-- ✅ Migraciones automáticas
-- ✅ Pool de conexiones optimizado
-- ✅ Health checks
+- ✅ Mongoose ODM integrado
+- ✅ Validaciones de esquema
+- ✅ Índices optimizados
+- ✅ TTL para auto-limpieza de sesiones
 
 [📖 Ver documentación de Docker](./docs/README-DOCKER.md)
 
@@ -62,7 +63,7 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ### Guías de Usuario
 - 📘 [Autenticación](./docs/README-AUTH.md) - Sistema de login/registro
-- 📘 [Docker & MySQL](./docs/README-DOCKER.md) - Configuración de base de datos
+- 📘 [Docker & MongoDB](./docs/README-DOCKER.md) - Configuración de base de datos
 - 📘 [Rate Limiting](./docs/README-RATE-LIMIT.md) - Protección de APIs
 
 ### Documentación Técnica
@@ -122,13 +123,14 @@ curl http://localhost:3000/api/rate-limit-status | jq
 
 ## 🛠️ Stack Tecnológico
 
-- **Framework**: Next.js 15 (App Router)
-- **Base de Datos**: MySQL 8.0
-- **ORM/Query**: mysql2
-- **Autenticación**: Argon2id + Sessions
-- **Validación**: Zod
-- **Containerización**: Docker & Docker Compose
-- **Rate Limiting**: En memoria (Redis ready)
+- **Next.js 15**: App Router con Turbopack para desarrollo ultrarrápido
+- **React 19**: Última versión con mejoras de performance
+- **MongoDB 7.0**: Base de datos NoSQL orientada a documentos en Docker
+- **Mongoose**: ODM elegante para MongoDB con validaciones y tipos
+- **Argon2**: Hashing de contraseñas con algoritmo ganador del Password Hashing Competition
+- **Zod**: Validación de esquemas TypeScript-first
+- **TypeScript**: Seguridad de tipos en todo el proyecto
+- **Docker**: Contenedorización de la base de datos
 
 ---
 
@@ -146,7 +148,7 @@ npm run lint     # Linter
 ## 🔒 Seguridad
 
 - ✅ Contraseñas hasheadas con **Argon2id**
-- ✅ Sesiones seguras en **MySQL**
+- ✅ Sesiones seguras en **MongoDB**
 - ✅ Cookies **HttpOnly** y **Secure**
 - ✅ **Rate limiting** en rutas críticas
 - ✅ Validación de entrada con **Zod**
@@ -163,12 +165,12 @@ docker-compose up -d
 
 ### Ver logs
 ```bash
-docker-compose logs -f mysql
+docker-compose logs -f mongodb
 ```
 
-### Conectar a MySQL
+### Conectar a MongoDB
 ```bash
-docker exec -it warbike-mysql mysql -u warbike -p
+docker exec -it warbike-mongodb mongosh -u warbike -p
 ```
 
 ### Detener servicios
@@ -186,12 +188,15 @@ docker-compose down
 # Sesiones
 SESSION_SECRET=your-secret-key-here
 
-# Base de datos
+# Base de datos MongoDB
 DB_HOST=localhost
-DB_PORT=3306
+DB_PORT=27017
 DB_USER=warbike
 DB_PASSWORD=your-password
 DB_NAME=warbike
+
+# Opcional: URI completa de MongoDB (alternativa a variables individuales)
+# MONGODB_URI=mongodb://warbike:password@localhost:27017/warbike?authSource=admin
 
 # Opcional: Redis para rate limiting
 # REDIS_URL=redis://localhost:6379
@@ -226,4 +231,5 @@ Este proyecto está bajo la licencia MIT.
 - [Next.js](https://nextjs.org/)
 - [Argon2](https://github.com/ranisalt/node-argon2)
 - [Zod](https://zod.dev/)
-- [MySQL](https://www.mysql.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)

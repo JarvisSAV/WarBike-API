@@ -2,16 +2,19 @@
 
 ## ✅ Completado
 
-### 1. 🗄️ Base de Datos MySQL en Docker
+### 1. 🗄️ Base de Datos MongoDB en Docker
 - **Docker Compose** configurado
-- Base de datos `warbike` con tablas `users` y `sessions`
+- Base de datos `warbike` con colecciones `users` y `sessions`
+- **Mongoose ODM** integrado
+- Validaciones JSON Schema
+- Índices optimizados (TTL para sesiones)
 - Credenciales en `.env`
 - Health checks configurados
-- Script `init.sql` para inicialización automática
+- Script `init-mongo.js` para inicialización automática
 
 **Archivos:**
 - `docker-compose.yml`
-- `init.sql`
+- `init-mongo.js`
 - `.dockerignore`
 - `README-DOCKER.md`
 
@@ -19,9 +22,10 @@
 
 ### 2. 🔐 Sistema de Autenticación con Argon2
 - **Hash seguro** con Argon2id (más seguro que bcrypt)
-- **Sesiones en MySQL** (no JWT en cookies)
-- **Validación con Zod**
+- **Sesiones en MongoDB** con Mongoose (no JWT en cookies)
+- **Validación doble**: Zod + Mongoose schemas + JSON Schema
 - **Auto-login** después del registro
+- **TTL automático** para limpieza de sesiones
 
 **Rutas implementadas:**
 - `POST /api/signup` - Registro de usuario
@@ -30,8 +34,9 @@
 - `GET /api/me` - Perfil del usuario autenticado
 
 **Archivos:**
-- `src/lib/session.ts` - Gestión de sesiones
-- `src/lib/db.ts` - Conexión MySQL
+- `src/lib/session.ts` - Gestión de sesiones con Mongoose
+- `src/lib/db.ts` - Conexión MongoDB con Mongoose
+- `src/lib/models.ts` - Schemas de User y Session
 - `src/app/api/signup/route.ts`
 - `src/app/api/signin/route.ts`
 - `src/app/api/logout/route.ts`
@@ -74,8 +79,9 @@
 
 ### Sesiones
 - ✅ IDs de 64 caracteres hex (crypto.randomBytes)
-- ✅ Almacenadas en MySQL
+- ✅ Almacenadas en MongoDB
 - ✅ Expiración automática (7 días)
+- ✅ Limpieza automática con índice TTL
 - ✅ Cookies HttpOnly y Secure
 - ✅ SameSite=Lax (protección CSRF)
 
@@ -141,7 +147,7 @@ curl http://localhost:3000/api/rate-limit-status | jq
   "dependencies": {
     "argon2": "^0.x.x",
     "jose": "^6.1.0",
-    "mysql2": "^3.x.x",
+    "mongoose": "^8.9.0",
     "next": "15.5.4",
     "zod": "^4.1.11"
   }
@@ -157,10 +163,10 @@ curl http://localhost:3000/api/rate-limit-status | jq
 docker-compose up -d
 
 # Ver logs
-docker-compose logs -f mysql
+docker-compose logs -f mongodb
 
-# Conectarse a MySQL
-docker exec -it warbike-mysql mysql -u warbike -p2J9Hfq+ixVY warbike
+# Conectarse a MongoDB
+docker exec -it warbike-mongodb mongosh -u warbike -p2J9Hfq+ixVY --authenticationDatabase admin
 
 # Detener
 docker-compose down
@@ -213,8 +219,9 @@ docker-compose down -v
 
 - `README.md` - Principal
 - `README-AUTH.md` - Sistema de autenticación
-- `README-DOCKER.md` - Docker y MySQL
+- `README-DOCKER.md` - Docker y MongoDB
 - `README-RATE-LIMIT.md` - Rate limiting
+- `MIGRACION-MONGODB.md` - Migración de MySQL a MongoDB
 - `REDIS-MIGRATION.md` - Migración a Redis
 - `IMPLEMENTACION-AUTH.md` - Notas de implementación
 
@@ -226,12 +233,15 @@ docker-compose down -v
 # Sesiones
 SESSION_SECRET=iBY93AeKj7BwMUGm4UkUy949DJ7eG9R93lETAT92YNg
 
-# Base de datos
+# Base de datos MongoDB
 DB_HOST=localhost
-DB_PORT=3306
+DB_PORT=27017
 DB_USER=warbike
 DB_PASSWORD=2J9Hfq+ixVY
 DB_NAME=warbike
+
+# Opcional: URI completa de MongoDB
+# MONGODB_URI=mongodb://warbike:2J9Hfq+ixVY@localhost:27017/warbike?authSource=admin
 
 # Opcional: Redis para rate limiting en producción
 # REDIS_URL=redis://localhost:6379

@@ -1,32 +1,101 @@
-// conexión a la base de datos mysql usando mysql2 exportando db
-import mysql from 'mysql2/promise'
+// Conexión a MongoDB usando Mongoose
+import mongoose from 'mongoose'
 
-// Configuración de la conexión a la base de datos
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306'),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'warbike',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0
-})
+// Construir URI de conexión
+const DB_USER = process.env.DB_USER || 'warbike'
+const DB_PASSWORD = process.env.DB_PASSWORD || ''
+const DB_HOST = process.env.DB_HOST || 'localhost'
+const DB_PORT = process.env.DB_PORT || '27017'
+const DB_NAME = process.env.DB_NAME || 'warbike'
 
-// Función para verificar la conexión
-export async function testConnection() {
+// URI de conexión MongoDB
+const MONGODB_URI = process.env.MONGODB_URI || 
+  `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`
+
+// Variable para trackear el estado de conexión
+let isConnected = false
+
+/**
+ * Conecta a MongoDB usando Mongoose
+ */
+export async function connectDB(): Promise<typeof mongoose> {
+  if (isConnected && mongoose.connection.readyState === 1) {
+    return mongoose
+  }
+
   try {
-    const connection = await pool.getConnection()
-    console.log('✅ Conexión a la base de datos exitosa')
-    connection.release()
+    const db = await mongoose.connect(MONGODB_URI, {
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000
+    })
+
+    isConnected = true
+    console.log('✅ Conectado a MongoDB:', DB_NAME)
+    
+    return db
+  } catch (error) {
+    console.error('❌ Error al conectar a MongoDB:', error)
+    isConnected = false
+    throw error
+  }
+}
+
+/**
+ * Verifica la conexión a MongoDB
+ */
+export async function testConnection(): Promise<boolean> {
+  try {
+    await connectDB()
+    await mongoose.connection.db?.admin().ping()
+    console.log('✅ Conexión a MongoDB exitosa')
     return true
   } catch (error) {
-    console.error('❌ Error al conectar a la base de datos:', error)
+    console.error('❌ Error al conectar a MongoDB:', error)
     return false
   }
 }
 
-// Exportar el pool de conexiones
-export const db = pool
+/**
+ * Cierra la conexión a MongoDB
+ */
+export async function closeConnection(): Promise<void> {
+  try {
+    await mongoose.connection.close()
+    isConnected = false
+    console.log('✅ Conexión a MongoDB cerrada')
+  } catch (error) {
+    console.error('❌ Error al cerrar conexión:', error)
+  }
+}
+
+// Event listeners para debugging
+mongoose.connection.on('connected', () => {
+  console.log('🔗 Mongoose conectado a MongoDB')
+})
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ Error de conexión Mongoose:', err)
+  isConnected = false
+})
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️ Mongoose desconectado de MongoDB')
+  isConnected = false
+})
+
+// Manejo de cierre graceful
+process.on('SIGINT', async () => {
+  await closeConnection()
+  process.exit(0)
+})
+
+// Exportar mongoose y utilidades
+export default mongoose
+export { mongoose }
+export const db = {
+  connect: connectDB,
+  close: closeConnection,
+  test: testConnection
+}

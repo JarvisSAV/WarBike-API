@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
-import { db } from '@/lib/db'
-
-interface UserRow {
-  id: number
-  email: string
-  name: string
-  created_at: Date
-}
+import { connectDB } from '@/lib/db'
+import { User } from '@/lib/models'
 
 export async function GET() {
   try {
@@ -21,28 +15,26 @@ export async function GET() {
       )
     }
 
-    // Obtener datos del usuario
-    const [users] = await db.query(
-      'SELECT id, email, name, created_at FROM users WHERE id = ?',
-      [session.userId]
-    ) as [UserRow[], unknown]
+    // Conectar a MongoDB
+    await connectDB()
 
-    if (users.length === 0) {
+    // Obtener datos del usuario por ObjectId
+    const user = await User.findById(session.userId).select('-password')
+
+    if (!user) {
       return NextResponse.json(
         { message: 'Usuario no encontrado' },
         { status: 404 }
       )
     }
 
-    const user = users[0]
-
     return NextResponse.json(
       { 
         user: {
-          id: user.id,
+          _id: user._id,
           email: user.email,
           name: user.name,
-          createdAt: user.created_at
+          createdAt: user.createdAt
         }
       },
       { status: 200 }

@@ -15,7 +15,8 @@ Bienvenido a la documentación técnica de WarBike API.
 
 ### 🐳 Docker & Base de Datos
 **[README-DOCKER.md](./README-DOCKER.md)**
-- Configuración de MySQL con Docker
+- Configuración de MongoDB con Docker
+- Mongoose ODM
 - Comandos útiles
 - Backup y restauración
 - Troubleshooting
@@ -50,6 +51,11 @@ Bienvenido a la documentación técnica de WarBike API.
 
 ### 🚀 Guías de Migración
 
+**[MIGRACION-MONGODB.md](./MIGRACION-MONGODB.md)**
+- Migración de MySQL a MongoDB
+- Cambios en la arquitectura
+- Guía de actualización
+
 **[REDIS-MIGRATION.md](./REDIS-MIGRATION.md)**
 - Cuándo migrar a Redis
 - Opciones de configuración
@@ -65,7 +71,7 @@ docs/
 │
 ├── 📘 Guías de Usuario
 │   ├── README-AUTH.md                 # Autenticación
-│   ├── README-DOCKER.md               # Docker & MySQL
+│   ├── README-DOCKER.md               # Docker & MongoDB
 │   └── README-RATE-LIMIT.md           # Rate Limiting
 │
 ├── 🔧 Documentación Técnica
@@ -74,6 +80,7 @@ docs/
 │   └── IMPLEMENTACION-RESUMEN.md      # Resumen general
 │
 └── 🚀 Guías de Migración
+    ├── MIGRACION-MONGODB.md           # MySQL → MongoDB
     └── REDIS-MIGRATION.md             # Migrar a Redis
 ```
 
@@ -88,7 +95,8 @@ docs/
 - [Rate Limiting](./README-RATE-LIMIT.md)
 
 #### 🏗️ Infraestructura
-- [Docker & MySQL](./README-DOCKER.md)
+- [Docker & MongoDB](./README-DOCKER.md)
+- [Migración MySQL → MongoDB](./MIGRACION-MONGODB.md)
 - [Migración a Redis](./REDIS-MIGRATION.md)
 
 #### 📊 Implementación
@@ -153,8 +161,11 @@ Ver [README-AUTH.md](./README-AUTH.md#-seguridad)
 ### ¿Cuándo debo usar Redis?
 Ver [REDIS-MIGRATION.md](./REDIS-MIGRATION.md#cuándo-migrar-a-redis)
 
-### ¿Cómo configuro Docker?
+### ¿Cómo configuro Docker y MongoDB?
 Ver [README-DOCKER.md](./README-DOCKER.md#configuración)
+
+### ¿Cómo migrar de MySQL a MongoDB?
+Ver [MIGRACION-MONGODB.md](./MIGRACION-MONGODB.md)
 
 ### ¿Cómo funciona el rate limiting?
 Ver [README-RATE-LIMIT.md](./README-RATE-LIMIT.md)

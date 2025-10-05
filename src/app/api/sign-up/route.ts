@@ -1,7 +1,8 @@
 // ruta para la API de registro
 import { NextResponse } from 'next/server'
 import argon2 from 'argon2'
-import { db } from '@/lib/db'
+import { connectDB } from '@/lib/db'
+import { User } from '@/lib/models'
 import { createSession } from '@/lib/session'
 import { applyRateLimit } from '@/lib/rate-limit-middleware'
 import { RATE_LIMITS } from '@/lib/rate-limit'
@@ -14,23 +15,16 @@ const signupSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres')
 })
 
-interface UserRow {
-  id: number
-  email: string
-}
-
-interface InsertResult {
-  insertId: number
-}
-
 export async function POST(request: Request) {
   // Aplicar rate limiting por IP
-  const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.SIGNUP)
-  if (rateLimitByIp) {
-    return rateLimitByIp
-  }
+  // const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.SIGNUP)
+  // if (rateLimitByIp) {
+  //   return rateLimitByIp
+  // }
 
   try {
+    await connectDB()
+    
     const body = await request.json()
 
     // Validar datos de entrada
@@ -48,12 +42,9 @@ export async function POST(request: Request) {
     const { email, password, name } = validation.data
 
     // Verificar si el usuario ya existe
-    const [existingUsers] = await db.query(
-      'SELECT id FROM users WHERE email = ?',
-      [email]
-    ) as [UserRow[], unknown]
+    const existingUser = await User.findOne({ email: email.toLowerCase() })
 
-    if (existingUsers.length > 0) {
+    if (existingUser) {
       return NextResponse.json(
         { message: 'El email ya está registrado' },
         { status: 409 }
@@ -68,24 +59,23 @@ export async function POST(request: Request) {
       parallelism: 1
     })
 
-    // Crear el nuevo usuario en la base de datos
-    const [result] = await db.query(
-      'INSERT INTO users (email, password, name) VALUES (?, ?, ?)',
-      [email, hashedPassword, name]
-    ) as [InsertResult, unknown]
-
-    const userId = result.insertId
+    // Crear el nuevo usuario en MongoDB
+    const newUser = await User.create({
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      name
+    })
 
     // Crear sesión automáticamente después del registro
-    await createSession(userId)
+    await createSession(newUser._id)
 
     return NextResponse.json(
       { 
         message: 'Usuario registrado exitosamente',
         user: {
-          id: userId,
-          email,
-          name
+          id: newUser._id.toString(),
+          email: newUser.email,
+          name: newUser.name
         }
       },
       { status: 201 }

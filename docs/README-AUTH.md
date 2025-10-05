@@ -1,6 +1,6 @@
 # 🔐 API de Autenticación - WarBike
 
-Sistema de autenticación completo con sesiones almacenadas en MySQL y contraseñas hasheadas con Argon2.
+Sistema de autenticación completo con sesiones almacenadas en MongoDB y contraseñas hasheadas con Argon2.
 
 ## 📋 Características
 
@@ -9,8 +9,8 @@ Sistema de autenticación completo con sesiones almacenadas en MySQL y contrase�
 - ✅ Cierre de sesión (logout)
 - ✅ Verificación de sesión (me)
 - ✅ Contraseñas hasheadas con Argon2id
-- ✅ Sesiones almacenadas en MySQL
-- ✅ Validación con Zod
+- ✅ Sesiones almacenadas en MongoDB con Mongoose
+- ✅ Validación con Zod y Mongoose schemas
 - ✅ Cookies HttpOnly y Secure
 
 ## 🚀 Endpoints
@@ -44,7 +44,7 @@ curl -X POST http://localhost:3000/api/signup \
 {
   "message": "Usuario registrado exitosamente",
   "user": {
-    "id": 1,
+    "_id": "507f1f77bcf86cd799439011",
     "email": "usuario@example.com",
     "name": "Juan Pérez"
   }
@@ -85,7 +85,7 @@ curl -X POST http://localhost:3000/api/signin \
 {
   "message": "Inicio de sesión exitoso",
   "user": {
-    "id": 1,
+    "_id": "507f1f77bcf86cd799439011",
     "email": "usuario@example.com",
     "name": "Juan Pérez"
   }
@@ -114,7 +114,7 @@ curl -X GET http://localhost:3000/api/me \
 ```json
 {
   "user": {
-    "id": 1,
+    "_id": "507f1f77bcf86cd799439011",
     "email": "usuario@example.com",
     "name": "Juan Pérez",
     "createdAt": "2025-10-04T03:00:00.000Z"
@@ -239,61 +239,112 @@ const logout = async () => {
 - **Expires**: 7 días
 
 ### Sesiones
-- Almacenadas en MySQL
+- Almacenadas en MongoDB
 - ID generado con `crypto.randomBytes(32)`
 - Expiración automática después de 7 días
-- Limpieza automática de sesiones expiradas
+- Limpieza automática con índice TTL de MongoDB
 
 ---
 
 ## 🗄️ Estructura de la Base de Datos
 
-### Tabla `users`
-```sql
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_email (email)
-);
+### Colección `users`
+```typescript
+interface IUser {
+  _id: ObjectId;
+  email: string;        // Único, lowercase, formato email
+  password: string;     // Hash Argon2, mínimo 60 caracteres
+  name: string;         // Mínimo 1 carácter
+  createdAt: Date;      // Timestamp automático
+  updatedAt: Date;      // Timestamp automático
+}
+
+// Esquema Mongoose
+const userSchema = new Schema({
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      validator: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      message: 'Email inválido'
+    }
+  },
+  password: { type: String, required: true, minlength: 60 },
+  name: { type: String, required: true, minlength: 1 }
+}, { timestamps: true });
 ```
 
-### Tabla `sessions`
-```sql
-CREATE TABLE sessions (
-    id VARCHAR(255) PRIMARY KEY,
-    user_id INT NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_id (user_id),
-    INDEX idx_expires_at (expires_at)
-);
+### Colección `sessions`
+```typescript
+interface ISession {
+  _id: ObjectId;
+  sessionId: string;    // Único, generado con crypto
+  userId: ObjectId;     // Referencia a users
+  expiresAt: Date;      // TTL index, auto-limpieza
+  createdAt: Date;      // Timestamp automático
+  updatedAt: Date;      // Timestamp automático
+}
+
+// Esquema Mongoose
+const sessionSchema = new Schema({
+  sessionId: { type: String, required: true, unique: true },
+  userId: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+  expiresAt: { type: Date, required: true }
+}, { timestamps: true });
+
+// Índice TTL para auto-limpieza
+sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+```
+
+### Validación JSON Schema (init-mongo.js)
+MongoDB también aplica validaciones a nivel de base de datos:
+```javascript
+db.createCollection("users", {
+  validator: {
+    $jsonSchema: {
+      required: ["email", "password", "name"],
+      properties: {
+        email: { bsonType: "string", pattern: "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" },
+        password: { bsonType: "string", minLength: 60 },
+        name: { bsonType: "string", minLength: 1 }
+      }
+    }
+  }
+});
 ```
 
 ---
 
 ## 🛠️ Mantenimiento
 
-### Limpiar sesiones expiradas manualmente
+### Limpieza automática de sesiones
 
-Puedes crear un endpoint o cron job para limpiar sesiones:
+MongoDB maneja automáticamente la limpieza de sesiones expiradas gracias al índice TTL:
 
 ```typescript
-import { cleanupExpiredSessions } from '@/lib/session'
-
-// Ejecutar cada hora
-setInterval(() => {
-  cleanupExpiredSessions()
-}, 60 * 60 * 1000)
+// El índice TTL se configura en el schema
+sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 ```
 
-O directamente en MySQL:
-```sql
-DELETE FROM sessions WHERE expires_at < NOW();
+MongoDB revisa este índice cada 60 segundos y elimina documentos donde `expiresAt` haya pasado.
+
+### Limpieza manual (opcional)
+
+Si necesitas limpiar sesiones manualmente:
+
+```typescript
+import { Session } from '@/lib/models';
+
+// Eliminar sesiones expiradas
+await Session.deleteMany({ expiresAt: { $lt: new Date() } });
+```
+
+O directamente en MongoDB shell:
+```javascript
+db.sessions.deleteMany({ expiresAt: { $lt: new Date() } });
 ```
 
 ---
@@ -303,4 +354,6 @@ DELETE FROM sessions WHERE expires_at < NOW();
 - Las sesiones se renuevan automáticamente cuando se accede a rutas protegidas usando `updateSession()`
 - El registro crea automáticamente una sesión (auto-login)
 - Todas las contraseñas se hashean con Argon2id antes de almacenarse
-- Las validaciones usan Zod para mayor seguridad
+- Las validaciones usan Zod en la aplicación y JSON Schema en MongoDB
+- Los IDs son ObjectIds de MongoDB (ejemplo: `507f1f77bcf86cd799439011`)
+- Mongoose maneja automáticamente los timestamps `createdAt` y `updatedAt`

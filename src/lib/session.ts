@@ -1,21 +1,17 @@
 import 'server-only'
 import { cookies } from 'next/headers'
-import { db } from './db'
+import { connectDB } from './db'
+import { Session } from './models'
 import crypto from 'crypto'
+import mongoose from 'mongoose'
 
 // Duración de la sesión: 7 días
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000
 
 export interface SessionData {
   id: string
-  userId: number
+  userId: string
   expiresAt: Date
-}
-
-interface SessionRow {
-  id: string
-  user_id: number
-  expires_at: Date
 }
 
 // Generar un ID de sesión seguro
@@ -24,16 +20,19 @@ function generateSessionId(): string {
 }
 
 // Crear una nueva sesión en la base de datos
-export async function createSession(userId: number): Promise<string> {
+export async function createSession(userId: string | mongoose.Types.ObjectId): Promise<string> {
   try {
+    await connectDB()
+    
     const sessionId = generateSessionId()
     const expiresAt = new Date(Date.now() + SESSION_DURATION)
 
-    // Insertar sesión en la base de datos
-    await db.query(
-      'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)',
-      [sessionId, userId, expiresAt]
-    )
+    // Crear sesión en MongoDB
+    await Session.create({
+      sessionId,
+      userId: typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId,
+      expiresAt
+    })
 
     // Establecer cookie
     const cookieStore = await cookies()
@@ -55,6 +54,8 @@ export async function createSession(userId: number): Promise<string> {
 // Obtener sesión desde la base de datos
 export async function getSession(): Promise<SessionData | null> {
   try {
+    await connectDB()
+    
     const cookieStore = await cookies()
     const sessionId = cookieStore.get('session')?.value
 
@@ -62,23 +63,22 @@ export async function getSession(): Promise<SessionData | null> {
       return null
     }
 
-    // Buscar sesión en la base de datos
-    const [rows] = await db.query(
-      'SELECT id, user_id, expires_at FROM sessions WHERE id = ? AND expires_at > NOW()',
-      [sessionId]
-    ) as [SessionRow[], unknown]
+    // Buscar sesión en MongoDB
+    const session = await Session.findOne({
+      sessionId,
+      expiresAt: { $gt: new Date() }
+    })
 
-    if (rows.length === 0) {
+    if (!session) {
       // Sesión no encontrada o expirada
       await deleteSession()
       return null
     }
 
-    const session = rows[0]
     return {
-      id: session.id,
-      userId: session.user_id,
-      expiresAt: new Date(session.expires_at)
+      id: session.sessionId,
+      userId: session.userId.toString(),
+      expiresAt: session.expiresAt
     }
   } catch (error) {
     console.error('Error getting session:', error)
@@ -97,10 +97,10 @@ export async function updateSession(): Promise<void> {
 
     const newExpiresAt = new Date(Date.now() + SESSION_DURATION)
 
-    // Actualizar en la base de datos
-    await db.query(
-      'UPDATE sessions SET expires_at = ? WHERE id = ?',
-      [newExpiresAt, session.id]
+    // Actualizar en MongoDB
+    await Session.updateOne(
+      { sessionId: session.id },
+      { $set: { expiresAt: newExpiresAt } }
     )
 
     // Actualizar cookie
@@ -120,12 +120,14 @@ export async function updateSession(): Promise<void> {
 // Eliminar sesión
 export async function deleteSession(): Promise<void> {
   try {
+    await connectDB()
+    
     const cookieStore = await cookies()
     const sessionId = cookieStore.get('session')?.value
 
     if (sessionId) {
-      // Eliminar de la base de datos
-      await db.query('DELETE FROM sessions WHERE id = ?', [sessionId])
+      // Eliminar de MongoDB
+      await Session.deleteOne({ sessionId })
     }
 
     // Eliminar cookie
@@ -135,10 +137,13 @@ export async function deleteSession(): Promise<void> {
   }
 }
 
-// Limpiar sesiones expiradas (ejecutar periódicamente)
+// Limpiar sesiones expiradas (MongoDB lo hace automáticamente con TTL index)
 export async function cleanupExpiredSessions(): Promise<void> {
   try {
-    await db.query('DELETE FROM sessions WHERE expires_at < NOW()')
+    await connectDB()
+    // MongoDB elimina automáticamente con el TTL index
+    // Pero podemos forzar la limpieza si es necesario
+    await Session.deleteMany({ expiresAt: { $lt: new Date() } })
   } catch (error) {
     console.error('Error cleaning up expired sessions:', error)
   }

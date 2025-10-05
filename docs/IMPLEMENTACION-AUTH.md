@@ -5,9 +5,10 @@
 Se ha implementado exitosamente un sistema completo de autenticación con:
 
 ✅ **Argon2id** para hash de contraseñas (más seguro que bcrypt)
-✅ **Sesiones en MySQL** (no JWT en cookies)
-✅ **Validación con Zod**
+✅ **Sesiones en MongoDB** con Mongoose (no JWT en cookies)
+✅ **Validación triple**: Zod + Mongoose schemas + JSON Schema
 ✅ **Cookies HttpOnly y Secure**
+✅ **TTL automático** para limpieza de sesiones
 ✅ **4 endpoints funcionales**
 
 ---
@@ -15,30 +16,37 @@ Se ha implementado exitosamente un sistema completo de autenticación con:
 ## 📁 Archivos Modificados/Creados
 
 ### 1. **src/lib/session.ts** - Sistema de sesiones
-- ✅ `createSession(userId)` - Crea sesión en BD y cookie
-- ✅ `getSession()` - Obtiene sesión actual
+- ✅ `createSession(userId)` - Crea sesión en MongoDB y cookie
+- ✅ `getSession()` - Obtiene sesión actual con Mongoose
 - ✅ `updateSession()` - Renueva sesión
-- ✅ `deleteSession()` - Elimina sesión
-- ✅ `cleanupExpiredSessions()` - Limpia sesiones expiradas
+- ✅ `deleteSession()` - Elimina sesión de MongoDB
+- ✅ Limpieza automática con índice TTL de MongoDB
 
-### 2. **src/app/api/signup/route.ts** - Registro
+### 2. **src/lib/models.ts** - Schemas Mongoose
+- ✅ `userSchema` - Esquema de usuario con validaciones
+- ✅ `sessionSchema` - Esquema de sesión con TTL index
+- ✅ Interfaces TypeScript `IUser` e `ISession`
+- ✅ Prevención de recompilación de modelos
+
+### 3. **src/app/api/signup/route.ts** - Registro
 - ✅ Validación con Zod (email, password min 8, name min 2)
 - ✅ Hash con Argon2id
-- ✅ Verifica email duplicado
+- ✅ Verifica email duplicado con `User.findOne()`
+- ✅ Crea usuario con `User.create()`
 - ✅ Auto-login después del registro
 
-### 3. **src/app/api/signin/route.ts** - Inicio de sesión
+### 4. **src/app/api/signin/route.ts** - Inicio de sesión
 - ✅ Validación de credenciales
 - ✅ Verificación con Argon2
-- ✅ Crea sesión en BD
+- ✅ Crea sesión en MongoDB
 
-### 4. **src/app/api/logout/route.ts** - Cierre de sesión
-- ✅ Elimina sesión de BD
+### 5. **src/app/api/logout/route.ts** - Cierre de sesión
+- ✅ Elimina sesión de MongoDB
 - ✅ Elimina cookie
 
-### 5. **src/app/api/me/route.ts** - Perfil usuario
+### 6. **src/app/api/me/route.ts** - Perfil usuario
 - ✅ Verifica sesión activa
-- ✅ Retorna datos del usuario
+- ✅ Retorna datos del usuario con ObjectId
 
 ---
 
@@ -51,7 +59,7 @@ curl -X POST http://localhost:3000/api/signup \
   -d '{"email":"test@warbike.com","password":"Test12345","name":"Usuario Test"}' \
   -c cookies.txt
 ```
-**Resultado**: Usuario creado con ID 1 ✅
+**Resultado**: Usuario creado con ObjectId ✅
 
 ### ✅ Verificación de sesión
 ```bash
@@ -60,10 +68,11 @@ curl -X GET http://localhost:3000/api/me -b cookies.txt
 **Resultado**: Retorna datos del usuario ✅
 
 ### ✅ Sesión en base de datos
-```sql
-SELECT * FROM sessions;
+```javascript
+// En mongosh:
+db.sessions.find().pretty()
 ```
-**Resultado**: Sesión almacenada correctamente ✅
+**Resultado**: Sesión almacenada correctamente con TTL ✅
 
 ### ✅ Cierre de sesión
 ```bash
@@ -101,9 +110,9 @@ curl -X POST http://localhost:3000/api/signup \
 
 ### Sesiones
 - **ID**: 64 caracteres hex (crypto.randomBytes(32))
-- **Almacenamiento**: MySQL, no en cookies
+- **Almacenamiento**: MongoDB con Mongoose, no en cookies
 - **Expiración**: 7 días
-- **Limpieza**: Automática al acceder o manual
+- **Limpieza**: Automática con índice TTL de MongoDB
 
 ### Cookies
 - **HttpOnly**: ✅ (JavaScript no puede acceder)
@@ -120,23 +129,33 @@ curl -X POST http://localhost:3000/api/signup \
 
 ## 📊 Base de Datos
 
-### Tabla users
+### Colección users
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | INT | PK, AUTO_INCREMENT |
-| email | VARCHAR(255) | UNIQUE, NOT NULL |
-| password | VARCHAR(255) | Hash Argon2 |
-| name | VARCHAR(255) | NOT NULL |
-| created_at | TIMESTAMP | Auto |
-| updated_at | TIMESTAMP | Auto |
+| _id | ObjectId | PK, generado por MongoDB |
+| email | String | Unique, lowercase, validado |
+| password | String | Hash Argon2 (min 60 chars) |
+| name | String | NOT NULL (min 1 char) |
+| createdAt | Date | Timestamp automático (Mongoose) |
+| updatedAt | Date | Timestamp automático (Mongoose) |
 
-### Tabla sessions
+**Índices:**
+- `email`: unique
+- Validación JSON Schema a nivel de BD
+
+### Colección sessions
 | Campo | Tipo | Descripción |
 |-------|------|-------------|
-| id | VARCHAR(255) | PK, ID de sesión |
-| user_id | INT | FK -> users(id) |
-| expires_at | TIMESTAMP | NOT NULL |
-| created_at | TIMESTAMP | Auto |
+| _id | ObjectId | PK, generado por MongoDB |
+| sessionId | String | Unique, ID de sesión |
+| userId | ObjectId | Referencia a users._id |
+| expiresAt | Date | NOT NULL, TTL index |
+| createdAt | Date | Timestamp automático |
+| updatedAt | Date | Timestamp automático |
+
+**Índices:**
+- `sessionId`: unique
+- `expiresAt`: TTL index (expireAfterSeconds: 0) para auto-limpieza
 
 ---
 
@@ -205,12 +224,14 @@ Ver `README-DOCKER.md` para gestión de la base de datos.
 
 ## ✨ Estado Final
 
-- ✅ Base de datos MySQL corriendo en Docker
+- ✅ Base de datos MongoDB corriendo en Docker
+- ✅ Mongoose ODM integrado
 - ✅ Sistema de autenticación completo
 - ✅ Contraseñas seguras con Argon2
-- ✅ Sesiones persistentes en BD
-- ✅ Validación de datos
+- ✅ Sesiones persistentes en MongoDB con TTL
+- ✅ Validación triple (Zod + Mongoose + JSON Schema)
+- ✅ ObjectIds en lugar de IDs numéricos
 - ✅ Todas las rutas probadas y funcionando
-- ✅ Usuario de prueba creado
+- ✅ Limpieza automática de sesiones expiradas
 
 **¡Sistema listo para usar! 🚀**
