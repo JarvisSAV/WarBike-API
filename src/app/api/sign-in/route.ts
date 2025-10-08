@@ -70,14 +70,13 @@ export async function POST(request: Request) {
     }
 
     // Crear sesión con el ObjectId del usuario
-    await createSession(user._id.toString())
+    const token = await createSession(user._id.toString())
 
     return NextResponse.json(
       {
         message: 'Inicio de sesión exitoso',
+        token: token,
         user: {
-          _id: user._id,
-          email: user.email,
           name: user.name
         }
       },

@@ -1,5 +1,5 @@
 import 'server-only'
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { connectDB } from './db'
 import crypto from 'crypto'
 import mongoose, { type ObjectId } from 'mongoose'
@@ -57,8 +57,18 @@ export async function getSession(): Promise<SessionData | null> {
   try {
     await connectDB()
 
-    const cookieStore = await cookies()
-    const sessionId = cookieStore.get('session')?.value
+    let sessionId: string | undefined
+
+    const authorization = (await headers()).get('authorization')
+    console.log({ authorization })
+
+
+    if (authorization) {
+      sessionId = authorization.split(' ')[1]
+    } else {
+      const cookieStore = await cookies()
+      sessionId = cookieStore.get('session')?.value
+    }
 
     if (!sessionId) {
       return null
