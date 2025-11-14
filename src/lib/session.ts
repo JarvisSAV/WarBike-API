@@ -60,8 +60,6 @@ export async function getSession(): Promise<SessionData | null> {
     let sessionId: string | undefined
 
     const authorization = (await headers()).get('authorization')
-    console.log({ authorization })
-
 
     if (authorization) {
       sessionId = authorization.split(' ')[1]

@@ -1,8 +1,8 @@
 # @host = laughing-telegram-qjpxpgqwxx6f65rg-3000.app.github.dev
 @host = localhost:3000
-@session = session=2facd737824917b06813da49cfe00a9e4af334bbf920e9bc6072956d49804a91; Path=/; Expires=Sun, 12 Oct 2025 01:39:44 GMT; HttpOnly; SameSite=lax
-@email = silvino@gmail.com
-@password = xemwus-pemguk-Zesdi9
+@session = 2facd737824917b06813da49cfe00a9e4af334bbf920e9bc6072956d49804a91
+@email = alan@gmail.com
+@password = 1234567890
 
 ###
 GET /api/ping HTTP/1.1
@@ -33,9 +33,8 @@ Content-Type: application/json
 ### Me
 GET /api/me HTTP/1.1
 Host: {{host}}
-Cookie: {{session}}
+Accept: application/json
 
 ### Sign Out
 POST /api/sign-out HTTP/1.1
 Host: {{host}}
-Cookie: {{session}}

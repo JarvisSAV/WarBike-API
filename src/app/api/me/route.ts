@@ -10,7 +10,7 @@ export async function GET() {
 
     if (!session) {
       return NextResponse.json(
-        { message: 'No autenticado' },
+        { message: 'No autenticado o sesión expirada' },
         { status: 401 }
       )
     }
