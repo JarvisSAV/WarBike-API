@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap 3.3.7 CSS
+import '../styles/styles.css'; // tu hoja de estilos personalizada
+import 'font-awesome/css/font-awesome.min.css'; // Font Awesome
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,6 +27,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+       <head>
+        {/* jQuery sin integrity */}
+        <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+        ></script>
+
+        {/* Bootstrap 3.3.7 JS */}
+        <script
+          src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        ></script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
