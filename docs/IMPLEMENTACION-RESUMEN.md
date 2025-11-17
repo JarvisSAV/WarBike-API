@@ -2,25 +2,7 @@
 
 ## ✅ Completado
 
-### 1. 🗄️ Base de Datos MongoDB en Docker
-- **Docker Compose** configurado
-- Base de datos `warbike` con colecciones `users` y `sessions`
-- **Mongoose ODM** integrado
-- Validaciones JSON Schema
-- Índices optimizados (TTL para sesiones)
-- Credenciales en `.env`
-- Health checks configurados
-- Script `init-mongo.js` para inicialización automática
-
-**Archivos:**
-- `docker-compose.yml`
-- `init-mongo.js`
-- `.dockerignore`
-- `README-DOCKER.md`
-
----
-
-### 2. 🔐 Sistema de Autenticación con Argon2
+### 1. 🔐 Sistema de Autenticación con Argon2
 - **Hash seguro** con Argon2id (más seguro que bcrypt)
 - **Sesiones en MongoDB** con Mongoose (no JWT en cookies)
 - **Validación doble**: Zod + Mongoose schemas + JSON Schema
@@ -45,7 +27,7 @@
 
 ---
 
-### 3. 🛡️ Rate Limiting
+### 2. 🛡️ Rate Limiting
 - **Protección contra fuerza bruta**
 - **Múltiples niveles**: por IP y por email
 - **Límites configurables** por tipo de endpoint
@@ -146,33 +128,11 @@ curl http://localhost:3000/api/rate-limit-status | jq
 {
   "dependencies": {
     "argon2": "^0.x.x",
-    "jose": "^6.1.0",
     "mongoose": "^8.9.0",
     "next": "15.5.4",
     "zod": "^4.1.11"
   }
 }
-```
-
----
-
-## 🔄 Comandos Docker
-
-```bash
-# Iniciar BD
-docker-compose up -d
-
-# Ver logs
-docker-compose logs -f mongodb
-
-# Conectarse a MongoDB
-docker exec -it warbike-mongodb mongosh -u warbike -p2J9Hfq+ixVY --authenticationDatabase admin
-
-# Detener
-docker-compose down
-
-# Resetear (⚠️ borra datos)
-docker-compose down -v
 ```
 
 ---
@@ -219,7 +179,6 @@ docker-compose down -v
 
 - `README.md` - Principal
 - `README-AUTH.md` - Sistema de autenticación
-- `README-DOCKER.md` - Docker y MongoDB
 - `README-RATE-LIMIT.md` - Rate limiting
 - `MIGRACION-MONGODB.md` - Migración de MySQL a MongoDB
 - `REDIS-MIGRATION.md` - Migración a Redis

@@ -218,13 +218,11 @@ export const config = {
 
 Ver `README-AUTH.md` para ejemplos detallados de uso con curl y JavaScript.
 
-Ver `README-DOCKER.md` para gestión de la base de datos.
-
 ---
 
 ## ✨ Estado Final
 
-- ✅ Base de datos MongoDB corriendo en Docker
+- ✅ Base de datos MongoDB
 - ✅ Mongoose ODM integrado
 - ✅ Sistema de autenticación completo
 - ✅ Contraseñas seguras con Argon2

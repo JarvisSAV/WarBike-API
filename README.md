@@ -15,12 +15,7 @@ cp .env.example .env
 # Editar .env con tus credenciales
 ```
 
-### 3. Iniciar base de datos (Docker)
-```bash
-docker-compose up -d
-```
-
-### 4. Iniciar servidor de desarrollo
+### 3. Iniciar servidor de desarrollo
 ```bash
 npm run dev
 ```
@@ -49,13 +44,10 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 [📖 Ver documentación de rate limiting](./docs/README-RATE-LIMIT.md)
 
 ### 🗄️ Base de Datos MongoDB
-- ✅ Docker Compose configurado
 - ✅ Mongoose ODM integrado
 - ✅ Validaciones de esquema
 - ✅ Índices optimizados
 - ✅ TTL para auto-limpieza de sesiones
-
-[📖 Ver documentación de Docker](./docs/README-DOCKER.md)
 
 ---
 
@@ -63,7 +55,6 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ### Guías de Usuario
 - 📘 [Autenticación](./docs/README-AUTH.md) - Sistema de login/registro
-- 📘 [Docker & MongoDB](./docs/README-DOCKER.md) - Configuración de base de datos
 - 📘 [Rate Limiting](./docs/README-RATE-LIMIT.md) - Protección de APIs
 
 ### Documentación Técnica
@@ -125,12 +116,11 @@ curl http://localhost:3000/api/rate-limit-status | jq
 
 - **Next.js 15**: App Router con Turbopack para desarrollo ultrarrápido
 - **React 19**: Última versión con mejoras de performance
-- **MongoDB 7.0**: Base de datos NoSQL orientada a documentos en Docker
+- **MongoDB 7.0**: Base de datos NoSQL orientada a documentos
 - **Mongoose**: ODM elegante para MongoDB con validaciones y tipos
 - **Argon2**: Hashing de contraseñas con algoritmo ganador del Password Hashing Competition
 - **Zod**: Validación de esquemas TypeScript-first
 - **TypeScript**: Seguridad de tipos en todo el proyecto
-- **Docker**: Contenedorización de la base de datos
 
 ---
 
@@ -153,32 +143,6 @@ npm run lint     # Linter
 - ✅ **Rate limiting** en rutas críticas
 - ✅ Validación de entrada con **Zod**
 - ✅ Protección **CSRF** con SameSite cookies
-
----
-
-## 🐳 Docker
-
-### Iniciar servicios
-```bash
-docker-compose up -d
-```
-
-### Ver logs
-```bash
-docker-compose logs -f mongodb
-```
-
-### Conectar a MongoDB
-```bash
-docker exec -it warbike-mongodb mongosh -u warbike -p
-```
-
-### Detener servicios
-```bash
-docker-compose down
-```
-
-[📖 Ver guía completa de Docker](./docs/README-DOCKER.md)
 
 ---
 
