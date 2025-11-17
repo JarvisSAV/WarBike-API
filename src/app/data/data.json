@@ -1,0 +1,77 @@
+{
+  "Header": {
+    "title": "War Bike",
+    "paragraph": "Convierte Cada Rodada en una Conquista  "
+    
+  },
+  "About": {
+    "paragraph": "War Bike es un juego que combina la actividad física con la competencia virtual para ciclistas aficionados. Los usuarios se registran en la aplicación, trazan una ruta y recorren en bicicleta mientras la app registra su desplazamiento mediante geolocalización, generando una zona de conquista en un mapa virtual que representa el territorio dominado.",
+    "Why": [
+      "Descuentos en tiendas",
+      "Trofeos digitales",
+      "Compite con tus amigos en un top",
+      "Objetos exclusivos"
+      
+    ]
+  
+  },
+  "Gallery": {
+    "paragraph": "¿Crees que eres el mejor? ¡Demuéstralo! Desafía a tus amigos a una batalla por el asfalto. Compara tus territorios conquistados en tiempo real y mira cómo crece tu imperio. Sincroniza rutas, roba sus zonas y deja claro quién es el único rey (o reina) que domina la ciudad",
+    "Why": [
+      
+    ]
+  
+  },
+   "Services": {
+    "paragraph": "¡En 'War Bike', tus rodadas se convierten en dominio! Con nuestra función de Conquista, cada ruta que recorres con tu bicicleta se transforma instantáneamente en territorio ganado en nuestro mapa global. No estás solo pedaleando; estás expandiendo tu imperio y reclamando el asfalto. War Bike: ¡Rueda, Domina, CONQUISTA!",
+    "Why": [
+      
+    ]
+  
+  },
+    "Testimonials": {
+    "paragraph": "¡Tu dominio tiene premio! Jugar 'War Bike' te da ventajas exclusivas. Convierte tus conquistas en descuentos para tiendas deportivas. Acumula trofeos digitales que prueben tu rango y accede a objetos exclusivos para personalizar tu perfil. ¡No solo juegues, GANA!",
+    "Why": [
+      
+    ]
+  
+  },
+  "Team": [
+    {
+      "img": "img/team/Qr.png",
+      "name": "Escanéame" 
+      
+    } 
+   
+  ],
+  "Contact": {
+    "address": "4321 California St, San Francisco, CA 12345 ",
+    "phone": "+1 123 456 1234",
+    "email": "WarBike@company.com",
+    "facebook": "fb.com",
+    "twitter": "twitter.com",
+    "youtube": "youtube.com"
+  },
+  "Features": [
+    {
+      "icon": "fa fa-bicycle",
+      "title": "Ejercicio real y juego",
+      "text": "combina el ejercicio real (ciclismo) con una competencia en un entorno digital, convirtiendo el deporte en un juego."
+    },
+    {
+      "icon": "fa fa-map-marker",
+      "title": "Geolocalización",
+      "text": "La aplicación utiliza el GPS del usuario para registrar sus rutas en bicicleta y traducirlas en acciones dentro del juego."
+    },
+    {
+      "icon": "fa fa-trophy",
+      "title": "Competencia y Comunidad",
+      "text": "los ciclistas compitan entre sí por el dominio de territorios, fomentar la interacción y visualización de los logros dentro de la comunidad de usuarios."
+    },
+    {
+      "icon": "fa fa-heartbeat",
+      "title": "Promoción de la Salud",
+      "text": "incentivar el uso de la bicicleta y la actividad física, utilizando la tecnología y la gamificación"
+    }
+  ]
+}
