@@ -20,19 +20,33 @@ function generateSessionId(): string {
   return crypto.randomBytes(32).toString('hex')
 }
 
+export interface DeviceInfo {
+  deviceName?: string
+  deviceType?: string
+  deviceModel?: string
+}
+
 // Crear una nueva sesión en la base de datos
-export async function createSession(userId: string | ObjectId): Promise<string> {
+export async function createSession(
+  userId: string | ObjectId,
+  deviceInfo?: DeviceInfo
+): Promise<string> {
   try {
     await connectDB()
 
     const sessionId = generateSessionId()
     const expiresAt = new Date(Date.now() + SESSION_DURATION)
+    const now = new Date()
 
     // Crear sesión en MongoDB
     await Session.create({
       sessionId,
       userId: typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId,
-      expiresAt
+      expiresAt,
+      deviceName: deviceInfo?.deviceName,
+      deviceType: deviceInfo?.deviceType,
+      deviceModel: deviceInfo?.deviceModel,
+      lastUsed: now
     })
 
     // Establecer cookie
