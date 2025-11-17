@@ -9,7 +9,7 @@ if (typeof jQuery === 'undefined') {
 }
 
 +function ($) {
-  'use strict';
+  'use strict'
   var version = $.fn.jquery.split(' ')[0].split('.')
   if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1) || (version[0] > 3)) {
     throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher, but lower than version 4')
@@ -26,7 +26,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
   // ============================================================
@@ -86,7 +86,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // ALERT CLASS DEFINITION
   // ======================
@@ -181,7 +181,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // BUTTON PUBLIC CLASS DEFINITION
   // ==============================
@@ -307,7 +307,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // CAROUSEL CLASS DEFINITION
   // =========================
@@ -343,9 +343,9 @@ if (typeof jQuery === 'undefined') {
   Carousel.prototype.keydown = function (e) {
     if (/input|textarea/i.test(e.target.tagName)) return
     switch (e.which) {
-      case 37: this.prev(); break
-      case 39: this.next(); break
-      default: return
+    case 37: this.prev(); break
+    case 39: this.next(); break
+    default: return
     }
 
     e.preventDefault()
@@ -546,7 +546,7 @@ if (typeof jQuery === 'undefined') {
 /* jshint latedef: false */
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // COLLAPSE PUBLIC CLASS DEFINITION
   // ================================
@@ -758,7 +758,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // DROPDOWN CLASS DEFINITION
   // =========================
@@ -924,7 +924,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // MODAL CLASS DEFINITION
   // ======================
@@ -1265,7 +1265,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // TOOLTIP PUBLIC CLASS DEFINITION
   // ===============================
@@ -1472,10 +1472,10 @@ if (typeof jQuery === 'undefined') {
         var viewportDim = this.getPosition(this.$viewport)
 
         placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
-                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
-                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
-                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
-                    placement
+          placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+            placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+              placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                placement
 
         $tip
           .removeClass(orgPlacement)
@@ -1632,8 +1632,8 @@ if (typeof jQuery === 'undefined') {
 
   Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
     return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
-           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
-           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+      placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+        placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
         /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
 
   }
@@ -1785,7 +1785,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // POPOVER PUBLIC CLASS DEFINITION
   // ===============================
@@ -1844,8 +1844,8 @@ if (typeof jQuery === 'undefined') {
 
     return $e.attr('data-content')
       || (typeof o.content == 'function' ?
-            o.content.call($e[0]) :
-            o.content)
+        o.content.call($e[0]) :
+        o.content)
   }
 
   Popover.prototype.arrow = function () {
@@ -1894,7 +1894,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // SCROLLSPY CLASS DEFINITION
   // ==========================
@@ -2067,7 +2067,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // TAB CLASS DEFINITION
   // ====================
@@ -2132,15 +2132,15 @@ if (typeof jQuery === 'undefined') {
       $active
         .removeClass('active')
         .find('> .dropdown-menu > .active')
-          .removeClass('active')
+        .removeClass('active')
         .end()
         .find('[data-toggle="tab"]')
-          .attr('aria-expanded', false)
+        .attr('aria-expanded', false)
 
       element
         .addClass('active')
         .find('[data-toggle="tab"]')
-          .attr('aria-expanded', true)
+        .attr('aria-expanded', true)
 
       if (transition) {
         element[0].offsetWidth // reflow for transition
@@ -2152,10 +2152,10 @@ if (typeof jQuery === 'undefined') {
       if (element.parent('.dropdown-menu').length) {
         element
           .closest('li.dropdown')
-            .addClass('active')
+          .addClass('active')
           .end()
           .find('[data-toggle="tab"]')
-            .attr('aria-expanded', true)
+          .attr('aria-expanded', true)
       }
 
       callback && callback()
@@ -2223,7 +2223,7 @@ if (typeof jQuery === 'undefined') {
 
 
 +function ($) {
-  'use strict';
+  'use strict'
 
   // AFFIX CLASS DEFINITION
   // ======================
@@ -2374,4 +2374,4 @@ if (typeof jQuery === 'undefined') {
     })
   })
 
-}(jQuery);
+}(jQuery)
