@@ -13,10 +13,10 @@ export const Services = (props) => {
             data-aos-duration="1000"
           >
             <div className="row">
-              <div class="col-xs-6 col-md-6">
+              <div className="col-xs-6 col-md-6">
                 <img src="img/Ganaa.png" className="img-fluid" alt="" />
               </div>
-              <div class="col-xs-6 col-md-6">
+              <div className="col-xs-6 col-md-6">
                 <img src="img/Mapa.png" className="img-fluid" alt="" />
               </div>
             </div>

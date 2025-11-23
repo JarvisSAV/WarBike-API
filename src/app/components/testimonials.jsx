@@ -14,14 +14,14 @@ export const Testimonials = (props) => {
             {" "}
 
               <div className="row">
-              <div class="col-xs-6 col-md-6">
+              <div className="col-xs-6 col-md-6">
                 <img src="img/Gana.jpeg" className="img-responsive" alt="" />{" "}
               </div>
-              <div class="col-xs-6 col-md-6">
+              <div className="col-xs-6 col-md-6">
                 <img src="img/Ganaa.jpeg" className="img-responsive" alt="" />{" "}
               </div>
             </div>
-            
+
           </div>
          
           <div 
