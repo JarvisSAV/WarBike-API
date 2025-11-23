@@ -5,6 +5,7 @@ import '../styles/styles.css'; // tu hoja de estilos personalizada
 import 'font-awesome/css/font-awesome.min.css'; // Font Awesome
 
 
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin']
