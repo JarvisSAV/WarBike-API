@@ -15,7 +15,7 @@ import './App.css'
 import '../styles/styles.css' // tu hoja de estilos personalizada
 import 'font-awesome/css/font-awesome.min.css' // Font Awesome
 import 'bootstrap/dist/css/bootstrap.min.css' // Bootstrap 3.3.7 CSS
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+
 
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -33,6 +33,13 @@ export default function App() {
   } | null>(null)
 
   useEffect(() => {
+    // Cargar jQuery y Bootstrap dinámicamente
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.$ = window.jQuery = require('jquery')
+      require('bootstrap/dist/js/bootstrap.min.js')
+    }
+
     // Cargar los datos del JSON
     setLandingPageData(JsonData)
 
