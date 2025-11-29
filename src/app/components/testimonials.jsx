@@ -12,8 +12,16 @@ export const Testimonials = (props) => {
             data-aos-duration="1000"
           >
             {" "}
-            <img src="img/Gana.jpeg" className="img-responsive" alt="" />{" "}
-            <img src="img/Ganaa.jpeg" className="img-responsive" alt="" />{" "}
+
+              <div className="row">
+              <div className="col-xs-6 col-md-6">
+                <img src="img/Gana.jpeg" className="img-responsive" alt="" />{" "}
+              </div>
+              <div className="col-xs-6 col-md-6">
+                <img src="img/Ganaa.jpeg" className="img-responsive" alt="" />{" "}
+              </div>
+            </div>
+
           </div>
          
           <div 

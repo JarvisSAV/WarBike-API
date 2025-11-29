@@ -9,6 +9,10 @@ html {
   height: 100% !important;
 }
 
+#features{
+  padding-top: 7em;
+}
+
 h2,
 h3,
 h4 {
@@ -456,7 +460,7 @@ header .intro-text {
 
 
 #services img {
-  width: 57%;
+  width: 95%;
   max-width: 350px;
   margin: 0 auto;
   background: #fff;
@@ -583,7 +587,7 @@ header .intro-text {
 }
 
 #testimonials img {
-  width: 57%;
+  width: 95%;
   max-width: 350px;
   margin: 0 auto;
   background: #fff;

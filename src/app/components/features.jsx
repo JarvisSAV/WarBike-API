@@ -15,13 +15,13 @@ export const Features = (props) => {
             ? props.data.map((d, i) => (
                 <div 
                   key={`${d.title}-${i}`} 
-                  className="col-xs-6 col-md-3"
+                  className="col-xs-6 col-md-3 "
                   data-aos="fade-down" 
                   data-aos-delay={i * 100} 
                 >
                   {" "}
                   <i className={d.icon}></i>
-                  <h3 style={{ color: '#ffffffff' }}>{d.title}</h3>
+                  <h3 style={{ color: '#ffffffff' }} > {d.title}</h3>
                   <p style={{ color: '#b4ababff' }}>{d.text}</p>
                 </div>
               ))
