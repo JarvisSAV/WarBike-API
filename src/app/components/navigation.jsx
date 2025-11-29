@@ -8,7 +8,9 @@ export const Navigation = (props) => {
       data-aos="fade-down" 
       data-aos-duration="1500" 
     >
+      
       <div className="container">
+        
         <div className="navbar-header">
           <button
             type="button"
@@ -22,9 +24,27 @@ export const Navigation = (props) => {
             <span className="icon-bar"></span>{" "}
             <span className="icon-bar"></span>{" "}
           </button>
-          <a className="navbar-brand page-scroll" href="#page-top">
-            Pedalea y Conquista
-          </a>{" "}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px"
+            }}>
+                <div>
+                    <img src="img/logo_wb.png" className="img-responsive" alt="" style={{ height: "40px" }} >
+                    </img>
+                </div>
+            
+                <div>
+                  <a
+                    className="navbar-brand page-scroll"
+                    href="#page-top"
+                    style={{ fontSize: "18px" }}
+                  >
+                    Pedalea y Conquista
+                  </a>
+                </div>
+            
+          </div>
         </div>
 
         <div
