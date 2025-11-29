@@ -34,11 +34,15 @@ export default function App() {
 
   useEffect(() => {
     // Cargar jQuery y Bootstrap dinámicamente
-    if (typeof window !== 'undefined') {
-      // @ts-ignore
-      window.$ = window.jQuery = require('jquery')
-      require('bootstrap/dist/js/bootstrap.min.js')
+    const loadBootstrap = async () => {
+      if (typeof window !== 'undefined') {
+        const $ = (await import('jquery')).default
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).$ = (window as any).jQuery = $
+        await import('bootstrap/dist/js/bootstrap.min.js')
+      }
     }
+    loadBootstrap()
 
     // Cargar los datos del JSON
     setLandingPageData(JsonData)
