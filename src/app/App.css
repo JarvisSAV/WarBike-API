@@ -17,3 +17,53 @@
   }
   
 }
+
+
+/* Navigation */
+#menu {
+  padding: 15px;
+  transition: all 0.8s;
+}
+
+#menu.navbar-default {
+  background-color: rgba(10, 10, 10, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-color: #ebe7e700;
+  box-shadow: 0 0 10px rgba(255, 253, 253, 0.15);
+}
+
+#menu a.navbar-brand {
+  font-family: "Raleway", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #eae3e3;
+  text-transform: uppercase;
+}
+
+#menu.navbar-default .navbar-nav>li>a {
+  font-family: "Lato", sans-serif;
+  text-transform: uppercase;
+  color: #d1a019;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 8px 2px;
+  border-radius: 0;
+  margin: 9px 20px 0;
+}
+
+#menu.navbar-default .navbar-nav>li>a:after {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #d1a019 0%, #d1a019 100%);  
+  content: "";
+  transition: width 0.2s;
+}
+
+#menu.navbar-default .navbar-nav>li>a:hover:after {
+  width: 100%;
+}
