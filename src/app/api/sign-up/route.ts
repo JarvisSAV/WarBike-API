@@ -12,7 +12,10 @@ import { User } from '@/lib/models/user'
 const signupSchema = z.object({
   email: z.email('Email inválido'),
   password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
-  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres')
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  deviceName: z.string().optional(),
+  deviceType: z.string().optional(),
+  deviceModel: z.string().optional()
 })
 
 export async function POST(request: Request) {
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { email, password, name } = validation.data
+    const { email, password, name, deviceName, deviceType, deviceModel } = validation.data
 
     // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ email: email.toLowerCase() })
@@ -66,12 +69,17 @@ export async function POST(request: Request) {
       name
     })
 
-    // Crear sesión automáticamente después del registro
-    await createSession(newUser._id.toString())
+    // Crear sesión automáticamente después del registro con deviceInfo
+    const token = await createSession(newUser._id.toString(), {
+      deviceName,
+      deviceType,
+      deviceModel
+    })
 
     return NextResponse.json(
       {
         message: 'Usuario registrado exitosamente',
+        token: token,
         user: {
           id: newUser._id.toString(),
           email: newUser.email,

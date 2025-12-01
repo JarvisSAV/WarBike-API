@@ -7,6 +7,10 @@ export interface ISession extends Document {
   userId: ObjectId
   expiresAt: Date
   createdAt: Date
+  deviceName?: string
+  deviceType?: string
+  deviceModel?: string
+  lastUsed: Date
 }
 
 const sessionSchema = new Schema<ISession>(
@@ -24,6 +28,23 @@ const sessionSchema = new Schema<ISession>(
     expiresAt: {
       type: Date,
       required: [true, 'La fecha de expiración es requerida']
+    },
+    deviceName: {
+      type: String,
+      required: false
+    },
+    deviceType: {
+      type: String,
+      required: false
+    },
+    deviceModel: {
+      type: String,
+      required: false
+    },
+    lastUsed: {
+      type: Date,
+      required: true,
+      default: Date.now
     }
   },
   {

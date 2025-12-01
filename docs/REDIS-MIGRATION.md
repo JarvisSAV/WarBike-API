@@ -18,15 +18,6 @@ npm install -D @types/ioredis
 
 ## 🔧 Configuración
 
-### Opción 1: Redis local (desarrollo)
-```bash
-# Con Docker
-docker run -d --name redis -p 6379:6379 redis:7-alpine
-
-# Variables de entorno
-echo "REDIS_URL=redis://localhost:6379" >> .env
-```
-
 ### Opción 2: Upstash (producción serverless)
 1. Crear cuenta en [Upstash](https://upstash.com)
 2. Crear base de datos Redis

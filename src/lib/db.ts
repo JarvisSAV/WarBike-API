@@ -20,6 +20,7 @@ export async function connectDB(): Promise<typeof mongoose> {
     const db = await mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
       minPoolSize: 2,
+      dbName: config.db.name,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000
     })

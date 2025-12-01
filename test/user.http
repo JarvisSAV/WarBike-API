@@ -1,8 +1,9 @@
 # @host = laughing-telegram-qjpxpgqwxx6f65rg-3000.app.github.dev
 @host = localhost:3000
-@session = 2facd737824917b06813da49cfe00a9e4af334bbf920e9bc6072956d49804a91
-@email = alan@gmail.com
-@password = 1234567890
+@session = d6647ebd1cd2c4c0e55609242f4b0ea7b31452b1b2ad90d81a72c483d93cdfe2
+@name = Silvino
+@email = {{name}}@devcore.dev
+@password = g5XJOWbcFKE=
 
 ###
 GET /api/ping HTTP/1.1
@@ -17,7 +18,7 @@ Content-Type: application/json
 {
   "email": "{{email}}",
   "password": "{{password}}",
-  "name": "Silvino"
+  "name": "{{name}}"
 }
 
 ### Sign In

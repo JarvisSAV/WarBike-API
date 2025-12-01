@@ -9,9 +9,6 @@ html {
   height: 100% !important;
 }
 
-#features{
-  padding-top: 7em;
-}
 
 h2,
 h3,
@@ -187,7 +184,8 @@ hr {
 }
 
 .section-title {
-  margin-bottom: 70px;
+  padding-top: 3em;
+  margin-bottom: 2em;
 }
 
 .section-title h2 {
@@ -310,6 +308,11 @@ header .intro-text {
   background: #373333;
 }
 
+#features{
+  padding-top: 7em;
+}
+
+
 #features i.fa {
   font-size: 38px;
   margin-bottom: 20px;
@@ -322,6 +325,59 @@ header .intro-text {
   background: linear-gradient(to right, #d1a019 0%, #d1a019 100%);
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.05);
 }
+
+
+
+/* general Section */
+#general {
+  background: #373333;
+}
+
+#general{
+  padding-top: 3em;
+}
+
+
+#general i.fa {
+  font-size: 38px;
+  margin-bottom: 20px;
+  transition: all 0.5s;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  padding: 30px 0;
+  border-radius: 50%;
+  background: linear-gradient(to right, #d1a019 0%, #d1a019 100%);
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+/* bubblechart Section */
+#bubblechart {
+  background: #373333;
+}
+
+#bubblechart{
+  padding-top: 3em;
+}
+
+
+#bubblechart i.fa {
+  font-size: 38px;
+  margin-bottom: 20px;
+  transition: all 0.5s;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  padding: 30px 0;
+  border-radius: 50%;
+  background: linear-gradient(to right, #d1a019 0%, #d1a019 100%);
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+
+
 
 /* About Section */
 #about {

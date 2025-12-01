@@ -21,9 +21,9 @@ export const About = (props) => {
           >
             <div className="about-text">
               <h2 style={{ color: '#fff' }}>¿Qué es War Bike?</h2>
-              <p>{props.data ? props.data.paragraph : "loading..."}</p>
+              <p style={{ color: '#d5d4d4ff' }}>{props.data ? props.data.paragraph : "loading..."}</p>
               <h3 style={{ color: '#fff' }}>Al jugar podras obtener</h3>
-              <div className="list-style">
+              <div className="list-style" style={{ color: '#d5d4d4ff' }}>
                 <div className="col-lg-6 col-sm-6 col-xs-12">
                   <ul>
                     {props.data

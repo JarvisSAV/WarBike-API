@@ -10,7 +10,10 @@ import { User } from '@/lib/models/user'
 // Schema de validación
 const signinSchema = z.object({
   email: z.email('Email inválido'),
-  password: z.string().min(1, 'La contraseña es requerida')
+  password: z.string().min(1, 'La contraseña es requerida'),
+  deviceName: z.string().optional(),
+  deviceType: z.string().optional(),
+  deviceModel: z.string().optional()
 })
 
 export async function POST(request: Request) {
@@ -34,7 +37,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const { email, password } = validation.data
+    const { email, password, deviceName, deviceType, deviceModel } = validation.data
 
     // Rate limiting adicional por email (prevenir ataques dirigidos)
     const rateLimitByEmail = applyRateLimit(
@@ -69,8 +72,12 @@ export async function POST(request: Request) {
       )
     }
 
-    // Crear sesión con el ObjectId del usuario
-    const token = await createSession(user._id.toString())
+    // Crear sesión con el ObjectId del usuario y deviceInfo
+    const token = await createSession(user._id.toString(), {
+      deviceName,
+      deviceType,
+      deviceModel
+    })
 
     return NextResponse.json(
       {

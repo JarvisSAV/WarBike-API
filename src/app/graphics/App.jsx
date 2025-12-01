@@ -42,7 +42,8 @@ const App = () => {
   return (
     <div>
       <Navigation />
-     
+      <Header data={landingPageData.Header} />
+
     </div>
   );
 };
