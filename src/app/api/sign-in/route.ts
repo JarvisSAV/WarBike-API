@@ -18,10 +18,10 @@ const signinSchema = z.object({
 
 export async function POST(request: Request) {
   // Aplicar rate limiting por IP
-  const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.AUTH)
-  if (rateLimitByIp) {
-    return rateLimitByIp
-  }
+  // const rateLimitByIp = applyRateLimit(request, RATE_LIMITS.AUTH)
+  // if (rateLimitByIp) {
+  //   return rateLimitByIp
+  // }
   try {
     const body = await request.json()
 
