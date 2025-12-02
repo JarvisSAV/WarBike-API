@@ -9,7 +9,7 @@ export const Navigation = (props) => {
       data-aos-duration="1500" 
     >
       
-      <div className="container">
+      <div className="container" style={{ marginLeft: "0.5em" }} >
         
         <div className="navbar-header">
           <button
@@ -38,7 +38,7 @@ export const Navigation = (props) => {
                   <a
                     className="navbar-brand page-scroll"
                     href="#page-top"
-                    style={{ fontSize: "18px" }}
+                    style={{ fontSize: "1em" }}
                   >
                     Pedalea y Conquista
                   </a>
@@ -53,38 +53,43 @@ export const Navigation = (props) => {
         >
           <ul className="nav navbar-nav navbar-right">
               <li>
-                <a href="#features" className="page-scroll">
+                <a href="#features" className="page-scroll"  style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   Carateristicas
                 </a>
               </li>
               <li>
-                <a href="#about" className="page-scroll">
+                <a href="#about" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   War Bike
                 </a>
               </li>
               <li>
-                <a href="#services" className="page-scroll">
+                <a href="#services" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   Conquista
                 </a>
               </li>
               <li>
-                <a href="#portfolio" className="page-scroll">
+                <a href="#portfolio" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   Compite
                 </a>
               </li>
               <li>
-                <a href="#testimonials" className="page-scroll">
+                <a href="#testimonials" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   Gana
                 </a>
               </li>
               <li>
-                <a href="#team" className="page-scroll">
+                <a href="#team" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }}>
                   QR
                 </a>
               </li>
               <li>
-                <a href="#contact" className="page-scroll">
+                <a href="#contact" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
                   Contacto
+                </a>
+              </li>
+              <li>
+                <a href="/graphics" className="page-scroll" style={{ marginLeft: "0.5em", marginRight : "0.5em" }} >
+                  Estadisticas
                 </a>
               </li>
           </ul>
