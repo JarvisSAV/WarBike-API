@@ -30,10 +30,10 @@ export async function GET(request: Request) {
 
     // Buscar territorios de todos los usuarios
     const territories = await Territory.find({})
-        .sort({ timestamp: -1 })
-        .limit(limit)
-        .select('userId coordinates timestamp')
-        .lean()
+      .sort({ timestamp: -1 })
+      .limit(limit)
+      .select('userId coordinates timestamp')
+      .lean()
 
     return NextResponse.json(
       {
