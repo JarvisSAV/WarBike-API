@@ -10,6 +10,7 @@
     "seed": "tsx --env-file .env src/scripts/seed.ts"
   },
   "dependencies": {
+    "@vis.gl/react-google-maps": "^1.7.1",
     "aos": "^2.3.4",
     "argon2": "^0.44.0",
     "bootstrap": "^3.3.7",
