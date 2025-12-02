@@ -7,7 +7,6 @@ import { Features } from '../graphics/charts/features'
 import { Areas } from './charts/CyclistBubbleChart'
 import { Dashboard  } from './charts/CyclistDashboard'
 
-import JsonData from './data/data.json'
 import '../App.css'
 import '../../styles/styles.css' // tu hoja de estilos personalizada
 import 'font-awesome/css/font-awesome.min.css' // Font Awesome
@@ -18,6 +17,7 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 
 export default function App() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [landingPageData, setLandingPageData] = useState<{
     Header: object,
     Features: object,
@@ -60,11 +60,11 @@ export default function App() {
   return (
     <div>
      
-       <Header data={landingPageData?.Header} />
-       <Navigation />
-       <Features data={landingPageData?.Features} />
-       <Areas data={landingPageData?.Areas} />
-       <Dashboard data={landingPageData?.Dashboard} />
+      <Header data={landingPageData?.Header} />
+      <Navigation />
+      <Features data={landingPageData?.Features} />
+      <Areas />
+      <Dashboard />
        
     </div>
   )
