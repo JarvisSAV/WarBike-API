@@ -84,7 +84,8 @@ export async function POST(request: Request) {
         message: 'Inicio de sesión exitoso',
         token: token,
         user: {
-          name: user.name
+          name: user.name,
+          id: user._id.toString()
         }
       },
       { status: 200 }
